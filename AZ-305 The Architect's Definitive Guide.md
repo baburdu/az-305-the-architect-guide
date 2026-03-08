@@ -1,8 +1,52 @@
 # **AZ-305: The Architect's Definitive Guide**
 
+## Table of Contents
+
+- [Volume I: Identity, Authentication, and Governance](#volume-i-identity-authentication-and-governance)
+  - [1.1 The Azure Organizational Hierarchy and Scope](#11-the-azure-organizational-hierarchy-and-scope)
+  - [1.2 Microsoft Entra ID Governance](#12-microsoft-entra-id-governance)
+  - [1.3 Hybrid Identity Architectures](#13-hybrid-identity-architectures)
+  - [1.4 Licensing, Risk, and Security](#14-licensing-risk-and-security)
+
+- [Volume II: Data Engineering and Modern Integration](#volume-ii-data-engineering-and-modern-integration)
+  - [2.1 The Data Orchestration and Analytics Layer](#21-the-data-orchestration-and-analytics-layer)
+  - [2.2 Data Migration and Offline Mechanisms](#22-data-migration-and-offline-mechanisms)
+  - [2.3 Messaging and Event-Driven Architecture](#23-messaging-and-event-driven-architecture)
+  - [2.4 Security and Visualization](#24-security-and-visualization)
+
+- [Volume III: Data Storage and SQL Architectures](#volume-iii-data-storage-and-sql-architectures)
+  - [3.1 Storage Account Fundamentals](#31-storage-account-fundamentals)
+  - [3.2 Replication and Resiliency](#32-replication-and-resiliency)
+  - [3.3 SQL Solutions and Migration Strategy](#33-sql-solutions-and-migration-strategy)
+  - [3.4 Migration Mechanisms](#34-migration-mechanisms)
+  - [3.5 Azure Cosmos DB](#35-azure-cosmos-db)
+
+- [Volume IV: Business Continuity and Disaster Recovery (BCDR)](#volume-iv-business-continuity-and-disaster-recovery-bcdr)
+  - [4.1 Defining the Architectural Recovery Goals](#41-defining-the-architectural-recovery-goals)
+  - [4.2 Backup and Site Recovery Mechanisms](#42-backup-and-site-recovery-mechanisms)
+  - [4.3 Database High Availability and DR Options](#43-database-high-availability-and-dr-options)
+  - [4.4 Hybrid BCDR with Azure File Sync](#44-hybrid-bcdr-with-azure-file-sync)
+
+- [Volume V: Infrastructure, Networking, and Monitoring](#volume-v-infrastructure-networking-and-monitoring)
+  - [5.1 The Global vs. Regional Traffic Matrix](#51-the-global-vs-regional-traffic-matrix)
+  - [5.2 Secure Connectivity and Hybrid Design](#52-secure-connectivity-and-hybrid-design)
+  - [5.3 Diagnostic Tools and Monitoring](#53-diagnostic-tools-and-monitoring)
+  - [5.4 Specialized Compute Networking](#54-specialized-compute-networking)
+
+- [Volume VI: Compute and Web Application Design](#volume-vi-compute-and-web-application-design)
+  - [6.1 Compute Resiliency and Availability](#61-compute-resiliency-and-availability)
+  - [6.2 App Service Hosting and Plans](#62-app-service-hosting-and-plans)
+  - [6.3 Instance Types and Specialized Workloads](#63-instance-types-and-specialized-workloads)
+  - [6.4 The "Always On" vs. Failover Decision](#64-the-always-on-vs-failover-decision)
+
+- [Exam Strategy & Final Checklist](#exam-strategy--final-checklist-the-architects-last-stand)
+- [Glossary](#glossary)
+
+---
+
 ##
 
-## **🏛️ Volume I: Identity, Authentication, and Governance**
+## Volume I: Identity, Authentication, and Governance
 
 Identity is the primary security perimeter of the modern cloud. In the AZ-305 curriculum, this domain accounts for approximately 30% of the exam questions.
 
@@ -10,23 +54,23 @@ Identity is the primary security perimeter of the modern cloud. In the AZ-305 cu
 
 Designing for an enterprise requires a rigid understanding of how management layers propagate policies and permissions. The **Scope** defines the level at which an assignment, policy, or lock is applied.
 
-* **(L1) Tenants (Microsoft Entra ID)**: The top-level logical boundary that represents your organization and houses all identities. This is the ultimate "Root" for authentication.
+- **(L1) Tenants (Microsoft Entra ID)**: The top-level logical boundary that represents your organization and houses all identities. This is the ultimate "Root" for authentication.
 
-* **(L2) Management Groups (MGs)**: These are containers designed to govern multiple subscriptions. Any policy applied here is inherited by all subscriptions within the group, making it the ideal spot for enterprise-wide compliance.
+- **(L2) Management Groups (MGs)**: These are containers designed to govern multiple subscriptions. Any policy applied here is inherited by all subscriptions within the group, making it the ideal spot for enterprise-wide compliance.
 
-* **(L3) Subscriptions**: The primary boundary for billing and resource quotas. It acts as a logical partition for resources.
+- **(L3) Subscriptions**: The primary boundary for billing and resource quotas. It acts as a logical partition for resources.
 
-* **(L4) Resource Groups (RGs)**: Logical containers for grouping resources that share a common lifecycle.
+- **(L4) Resource Groups (RGs)**: Logical containers for grouping resources that share a common lifecycle.
 
-* **(L5) Resources**: The granular level for individual service instances, such as VMs, Storage Accounts, or Databases.
+- **(L5) Resources**: The granular level for individual service instances, such as VMs, Storage Accounts, or Databases.
 
 #### **🔬 Architectural Inheritance & Governance Logic**
 
-* **The Inheritance Rule**: Due to the hierarchy, do know what can be inherited and what will not. For example, an Azure Policy applied at the Tenant level will impact every lower level in the hierarchy.
+- **The Inheritance Rule**: Due to the hierarchy, do know what can be inherited and what will not. For example, an Azure Policy applied at the Tenant level will impact every lower level in the hierarchy.
 
-* **Resource Locks**: A "CanNotDelete" or "ReadOnly" lock applied at the Resource Group level will impact every single child Resource within it.
+- **Resource Locks**: A "CanNotDelete" or "ReadOnly" lock applied at the Resource Group level will impact every single child Resource within it.
 
-* **Policy vs. RBAC**: Policies focus on resource properties (e.g., "Must be in East US"), while RBAC (Role-Based Access Control) focuses on user actions (e.g., "Can create a VM").
+- **Policy vs. RBAC**: Policies focus on resource properties (e.g., "Must be in East US"), while RBAC (Role-Based Access Control) focuses on user actions (e.g., "Can create a VM").
 
 ### 1.2 Microsoft Entra ID Governance
 
@@ -36,25 +80,25 @@ Expect at least 3-5 questions focused specifically on Entra ID Governance. This 
 
 PIM is the "Hero" service for reducing the attack surface. It provides **Just-in-Time (JIT)** privileged access.
 
-* **Activation Requirement**: Users do not have permanent admin rights. They must "Activate" their role, providing a justification and potentially undergoing MFA.
+- **Activation Requirement**: Users do not have permanent admin rights. They must "Activate" their role, providing a justification and potentially undergoing MFA.
 
-* **Approval Workflows**: You can configure roles that require an designated approver to authorize the request before access is granted.  
-* **History and Auditing**: Every activation is logged, ensuring that you can audit who had "Owner" or "Global Admin" rights at any specific time.
+- **Approval Workflows**: You can configure roles that require an designated approver to authorize the request before access is granted.  
+- **History and Auditing**: Every activation is logged, ensuring that you can audit who had "Owner" or "Global Admin" rights at any specific time.
 
 #### **🔄 Access Reviews**
 
 This is an automated process to certify that users still require their current permissions.
 
-* **The Problem**: "Permission Creep"—where users accumulate access as they move through different roles in a company.  
-* **The Solution**: Periodic reviews where a manager or the user themselves must confirm they still need access. If they fail to respond, access can be automatically revoked based on policy.
+- **The Problem**: "Permission Creep"—where users accumulate access as they move through different roles in a company.  
+- **The Solution**: Periodic reviews where a manager or the user themselves must confirm they still need access. If they fail to respond, access can be automatically revoked based on policy.
 
 #### **🤖 Lifecycle Workflows**
 
 These automate the "Joiner, Mover, Leaver" process.
 
-* **Workforce Management**: You can integrate with HR systems (like Workday or SAP SuccessFactors) to automate the creation and removal of users.
+- **Workforce Management**: You can integrate with HR systems (like Workday or SAP SuccessFactors) to automate the creation and removal of users.
 
-* **Automation**: When an HR system marks an employee as "terminated," the Lifecycle Workflow can automatically disable the Entra ID account, revoke their sessions, and remove them from all groups.
+- **Automation**: When an HR system marks an employee as "terminated," the Lifecycle Workflow can automatically disable the Entra ID account, revoke their sessions, and remove them from all groups.
 
 ### 1.3 Hybrid Identity Architectures
 
@@ -62,19 +106,19 @@ Connecting on-premises directories to the cloud is a "HUGE" topic for the exam.
 
 #### **🔄 Entra Connect Sync vs. Cloud Sync**
 
-* **Entra Connect Sync**: The robust, traditional tool installed on an on-premises server. It is preferred for complex environments requiring attribute filtering or password writeback for legacy setups.
+- **Entra Connect Sync**: The robust, traditional tool installed on an on-premises server. It is preferred for complex environments requiring attribute filtering or password writeback for legacy setups.
 
-* **Entra Cloud Sync**: A lightweight, agent-based alternative designed for multi-forest or disconnected environments. It is managed primarily from the cloud, reducing on-prem footprint.
+- **Entra Cloud Sync**: A lightweight, agent-based alternative designed for multi-forest or disconnected environments. It is managed primarily from the cloud, reducing on-prem footprint.
 
 #### **🔑 Authentication Flow Comparison**
 
-* **Pass-through Authentication (PTA)**: Password validation occurs strictly on-premises. This is used by organizations that cannot store even a hash of a password in the cloud for compliance reasons.
+- **Pass-through Authentication (PTA)**: Password validation occurs strictly on-premises. This is used by organizations that cannot store even a hash of a password in the cloud for compliance reasons.
 
-* **Password Hash Sync (PHS)**: A hash of the password hash is synchronized to Entra ID. This is the simplest to manage and enables "Leaked Credential Detection."
+- **Password Hash Sync (PHS)**: A hash of the password hash is synchronized to Entra ID. This is the simplest to manage and enables "Leaked Credential Detection."
 
-* **Federation (AD FS)**: Relies on an external identity provider (like on-prem AD FS) for authentication.
+- **Federation (AD FS)**: Relies on an external identity provider (like on-prem AD FS) for authentication.
 
-* **Entra Domain Services (AD DS)**: Provides managed domain services (Domain Join, Group Policy, LDAP, Kerberos) in the cloud for legacy applications that cannot use modern auth.
+- **Entra Domain Services (AD DS)**: Provides managed domain services (Domain Join, Group Policy, LDAP, Kerberos) in the cloud for legacy applications that cannot use modern auth.
 
 ### 1.4 Licensing, Risk, and Security
 
@@ -91,13 +135,13 @@ Choosing the right license is a major part of the AZ-305 architect's job.
 
 🚨 Identity Protection (1-3 Questions)
 
-* **User Risk**: The probability that a user's identity has been compromised (e.g., credentials found on the dark web).
+- **User Risk**: The probability that a user's identity has been compromised (e.g., credentials found on the dark web).
 
-* **Sign-in Risk**: The probability that a specific authentication request is suspicious (e.g., an "Impossible Travel" sign-in from two different countries).
+- **Sign-in Risk**: The probability that a specific authentication request is suspicious (e.g., an "Impossible Travel" sign-in from two different countries).
 
-* **Conditional Access**: This is the "If-Then" engine of Entra ID. **Example**: *If* a user is in the Finance group and the Sign-in Risk is *Medium*, *Then* require MFA and a Managed Device.
+- **Conditional Access**: This is the "If-Then" engine of Entra ID. **Example**: *If* a user is in the Finance group and the Sign-in Risk is *Medium*, *Then* require MFA and a Managed Device.
 
-## **🛠️ Volume II: Data Engineering and Modern Integration**
+## Volume II: Data Engineering and Modern Integration
 
 *Architecting how data is orchestrated, transformed, and communicated is a core pillar of the AZ-305 exam. This section focuses on the distinction between purely analytical services and orchestration engines.*
 
@@ -109,18 +153,18 @@ When designing a data solution, the choice between Azure Synapse and Azure Data 
 
 Azure Synapse is described as an "all-in-one shop" service, specifically designed for large-scale data warehousing and Big Data processing.
 
-* **Unified Experience**: It brings together SQL technologies used in enterprise data warehousing, Spark technologies used for big data, and Data Explorer for log and time-series analytics.  
-* **Serverless and Dedicated Tiers**: You can choose between serverless SQL pools for unplanned or ad-hoc workloads and dedicated SQL pools for high-performance, predictable data warehousing.  
-* **Synapse Pipelines**: While Synapse has built-in orchestration, it is essentially the same engine found in Azure Data Factory, integrated into a single workspace.
+- **Unified Experience**: It brings together SQL technologies used in enterprise data warehousing, Spark technologies used for big data, and Data Explorer for log and time-series analytics.  
+- **Serverless and Dedicated Tiers**: You can choose between serverless SQL pools for unplanned or ad-hoc workloads and dedicated SQL pools for high-performance, predictable data warehousing.  
+- **Synapse Pipelines**: While Synapse has built-in orchestration, it is essentially the same engine found in Azure Data Factory, integrated into a single workspace.
 
 #### **🔄 Azure Data Factory (ADF)**
 
 Azure Data Factory is a "pure orchestrator" for data engineering pipelines. It is used to create, schedule, and orchestrate your ETL (Extract, Transform, Load) and ELT (Extract, Load, Transform) workflows.
 
-* **No-Code Transformation**: Use Mapping Data Flows to transform data at scale without writing code.  
-* **Connectivity**: It features over 90+ built-in connectors to pull data from diverse sources, including SaaS apps, on-premises databases, and other clouds.  
-* **The Integration Runtime (IR)**: This is the "compute engine" used by ADF to perform data movement and transformation activities.  
-  * **Self-hosted IR**: This is mandatory when your pipeline needs to reach data residing in an on-premises network or a virtual network with private access.
+- **No-Code Transformation**: Use Mapping Data Flows to transform data at scale without writing code.  
+- **Connectivity**: It features over 90+ built-in connectors to pull data from diverse sources, including SaaS apps, on-premises databases, and other clouds.  
+- **The Integration Runtime (IR)**: This is the "compute engine" used by ADF to perform data movement and transformation activities.  
+  - **Self-hosted IR**: This is mandatory when your pipeline needs to reach data residing in an on-premises network or a virtual network with private access.
 
 ---
 
@@ -132,9 +176,9 @@ Architects must decide how to physically move data into Azure, especially when b
 
 For large-scale, offline migrations where the network is not a viable option, use the **Azure Data Box Family** (Microsoft-provided hardware).
 
-* **Data Box Disk**: Small, portable SSDs for up to 40 TB.  
-* **Data Box**: A ruggedized device for up to 100 TB.  
-* **Data Box Heavy**: A massive, luggable device for up to 1 PB of data.
+- **Data Box Disk**: Small, portable SSDs for up to 40 TB.  
+- **Data Box**: A ruggedized device for up to 100 TB.  
+- **Data Box Heavy**: A massive, luggable device for up to 1 PB of data.
 
 #### **🚢 Azure Import/Export**
 
@@ -142,15 +186,15 @@ Unlike the Data Box family, the **Azure Import/Export** service requires you to 
 
 #### **🛠️ AzCopy and CLI Tools**
 
-* **AzCopy**: A high-performance command-line utility used specifically for copying or moving Blobs and files to and from storage accounts.  
-* **Versatility**: While you don't need to memorize exact command syntax for the exam, you must know that it can be leveraged via API, CLI, and az commands to automate data movement.
+- **AzCopy**: A high-performance command-line utility used specifically for copying or moving Blobs and files to and from storage accounts.  
+- **Versatility**: While you don't need to memorize exact command syntax for the exam, you must know that it can be leveraged via API, CLI, and az commands to automate data movement.
 
 #### **📂 Azure File Sync**
 
 This service allows you to centralize your organization's file shares in Azure Files while maintaining the local performance of an on-premises file server.
 
-* **Tiering**: It "tiers" infrequently accessed files to the cloud while keeping the most frequently used data on the local server.  
-* **Disaster Recovery**: If your local server fails, you can quickly set up a new one and point it to the Azure File share, restoring access through the local cache.
+- **Tiering**: It "tiers" infrequently accessed files to the cloud while keeping the most frequently used data on the local server.  
+- **Disaster Recovery**: If your local server fails, you can quickly set up a new one and point it to the Azure File share, restoring access through the local cache.
 
 ---
 
@@ -162,37 +206,37 @@ Knowing when to use which messaging service is a mandatory skill for the AZ-305 
 
 A high-reliability enterprise messaging service used for complex communication patterns.
 
-* **Queues**: Used for 1:1 "point-to-point" communication where a message is sent to a single receiver and processed once.  
-* **Topics and Subscriptions**: Used for 1:Many "publish/subscribe" models. One message is sent to a topic and can be received by multiple subscribers based on filter rules.  
-* **Best For**: Financial transactions, order processing, and scenarios requiring high reliability and stateful messaging.
+- **Queues**: Used for 1:1 "point-to-point" communication where a message is sent to a single receiver and processed once.  
+- **Topics and Subscriptions**: Used for 1:Many "publish/subscribe" models. One message is sent to a topic and can be received by multiple subscribers based on filter rules.  
+- **Best For**: Financial transactions, order processing, and scenarios requiring high reliability and stateful messaging.
 
 #### **⚡ Azure Event Grid**
 
 A reactive, event-driven routing service that enables you to build applications with "serverless" logic.
 
-* **Logic**: "Something happened (Event) \-\> Tell someone about it (Handler)".  
-* **Example**: A file is uploaded to a Storage Account (Event), which triggers an Azure Function to process that file (Handler).
+- **Logic**: "Something happened (Event) \-\> Tell someone about it (Handler)".  
+- **Example**: A file is uploaded to a Storage Account (Event), which triggers an Azure Function to process that file (Handler).
 
 #### **📊 Azure Event Hubs**
 
 A big data streaming platform and event ingestion service.
 
-* **Scale**: It can receive and process millions of events per second.  
-* **Best For**: Telemetry, application logging, and real-time analytics pipelines.
+- **Scale**: It can receive and process millions of events per second.  
+- **Best For**: Telemetry, application logging, and real-time analytics pipelines.
 
 #### **⚙️ Logic Apps vs. Azure Functions**
 
-* **Logic Apps**: A low-code/no-code service for "Workflow & Orchestration". Use this when you need to connect hundreds of SaaS services together via a visual designer.  
-* **Azure Functions**: A "Serverless Compute" service for running small pieces of code (functions) in the cloud. Use this for complex logic, data processing, or when you need the flexibility of a programming language.
+- **Logic Apps**: A low-code/no-code service for "Workflow & Orchestration". Use this when you need to connect hundreds of SaaS services together via a visual designer.  
+- **Azure Functions**: A "Serverless Compute" service for running small pieces of code (functions) in the cloud. Use this for complex logic, data processing, or when you need the flexibility of a programming language.
 
 ---
 
 ### **2.4 Security and Visualization**
 
-* **Azure Key Vault**: As an architect, you must know that the mandatory role of Key Vault is to provide a secure, centralized location for secrets, keys, and certificates. You are not required to know *how* it works internally for the exam, but rather *what* it is for.  
-* **Power BI**: Serves as the primary viewer and dashboard tool for data visualization, turning your Synapse or SQL data into actionable insights.
+- **Azure Key Vault**: As an architect, you must know that the mandatory role of Key Vault is to provide a secure, centralized location for secrets, keys, and certificates. You are not required to know *how* it works internally for the exam, but rather *what* it is for.  
+- **Power BI**: Serves as the primary viewer and dashboard tool for data visualization, turning your Synapse or SQL data into actionable insights.
 
-## **💾 Volume III: Data Storage and SQL Architectures**
+## Volume III: Data Storage and SQL Architectures
 
 The heart of any Azure solution lies in its data persistence layer. For the AZ-305 exam, storage and SQL design account for a massive 20-25% of the total content. Architects must be able to choose the correct storage account, replication strategy, and SQL tier to meet specific performance and cost requirements.
 
@@ -204,19 +248,19 @@ Selecting the correct account type is the foundation of your storage architectur
 
 #### **📂 Account Type Deep-Dive**
 
-* **General Purpose v2 (GPv2)**: The modern standard and "heart" of Azure Storage. It supports Blobs, Files, Queues, and Tables. Use this for almost all standard workloads unless specific Premium performance is required.  
-* **Premium Block Blob Storage**: Optimized for high transaction rates or scenarios requiring very low, consistent storage latency.  
-* **Premium File Storage**: Used specifically for high-performance enterprise file shares, supporting both SMB and NFS protocols.  
-* **Legacy Types**: While GPv1 and BlobStorage accounts still exist, they are rarely the correct architectural answer for new deployments.
+- **General Purpose v2 (GPv2)**: The modern standard and "heart" of Azure Storage. It supports Blobs, Files, Queues, and Tables. Use this for almost all standard workloads unless specific Premium performance is required.  
+- **Premium Block Blob Storage**: Optimized for high transaction rates or scenarios requiring very low, consistent storage latency.  
+- **Premium File Storage**: Used specifically for high-performance enterprise file shares, supporting both SMB and NFS protocols.  
+- **Legacy Types**: While GPv1 and BlobStorage accounts still exist, they are rarely the correct architectural answer for new deployments.
 
 #### **❄️ Blob Access Tiers**
 
 Architects must optimize for cost by matching data access patterns to the correct tier.
 
-* **Hot Tier**: Optimized for data that is accessed frequently.  
-* **Cool Tier**: For data accessed infrequently and stored for at least 30 days.  
-* **Cold Tier**: For data accessed rarely and stored for at least 90 days.  
-* **Archive Tier**: The lowest cost for long-term storage (180+ days). Data is "offline" and requires a rehydration process that can take hours.
+- **Hot Tier**: Optimized for data that is accessed frequently.  
+- **Cool Tier**: For data accessed infrequently and stored for at least 30 days.  
+- **Cold Tier**: For data accessed rarely and stored for at least 90 days.  
+- **Archive Tier**: The lowest cost for long-term storage (180+ days). Data is "offline" and requires a rehydration process that can take hours.
 
 ---
 
@@ -241,24 +285,24 @@ Azure SQL architecture is as heavy as Identity in the exam. You must be able to 
 
 #### **🏗️ The SQL Hosting Matrix**
 
-* **Azure SQL Database**: A fully managed PaaS offering. Use **Single Database** for isolated workloads or **Elastic Pools** when multiple databases need to share a set of resources for cost efficiency.  
-* **Azure SQL Managed Instance (MI)**: The "Hero" for migration. It is almost 100% compatible with on-premises SQL Server. **Crucial Fact**: Always link Managed Instance to requirements for **cross-database queries** and **SQL Agent** features.  
-* **SQL on Azure VMs**: The "IaaS" option. Use this only when you need full OS-level access, specific SQL versions not available in PaaS, or third-party software that must run on the same server.
+- **Azure SQL Database**: A fully managed PaaS offering. Use **Single Database** for isolated workloads or **Elastic Pools** when multiple databases need to share a set of resources for cost efficiency.  
+- **Azure SQL Managed Instance (MI)**: The "Hero" for migration. It is almost 100% compatible with on-premises SQL Server. **Crucial Fact**: Always link Managed Instance to requirements for **cross-database queries** and **SQL Agent** features.  
+- **SQL on Azure VMs**: The "IaaS" option. Use this only when you need full OS-level access, specific SQL versions not available in PaaS, or third-party software that must run on the same server.
 
 #### **💳 Billing Models and Tiers**
 
-* **DTU vs. vCore**: Use **DTU** for simple, pre-configured bundles of compute and storage. Use **vCore** for granular control, allowing you to scale compute and storage independently.  
-* **General Purpose**: Most common; balanced for standard workloads.  
-* **Business Critical**: For high-performance apps with low-latency requirements and fast recovery using Always On replicas.  
-* **Hyperscale**: For massive databases (up to 100TB) that require rapid scaling.  
-* **Serverless**: Automatically scales compute based on workload demand and bills for compute used per second.
+- **DTU vs. vCore**: Use **DTU** for simple, pre-configured bundles of compute and storage. Use **vCore** for granular control, allowing you to scale compute and storage independently.  
+- **General Purpose**: Most common; balanced for standard workloads.  
+- **Business Critical**: For high-performance apps with low-latency requirements and fast recovery using Always On replicas.  
+- **Hyperscale**: For massive databases (up to 100TB) that require rapid scaling.  
+- **Serverless**: Automatically scales compute based on workload demand and bills for compute used per second.
 
 ---
 
 ### 3.4 Migration Mechanisms
 
-* **SSMA (SQL Server Migration Assistant)**: Used specifically for migrating non-SQL engines (like Oracle or MySQL) to Azure SQL.  
-* **Azure SQL Migration Extension**: A specialized tool within Azure Data Studio for simplified, guided migrations.
+- **SSMA (SQL Server Migration Assistant)**: Used specifically for migrating non-SQL engines (like Oracle or MySQL) to Azure SQL.  
+- **Azure SQL Migration Extension**: A specialized tool within Azure Data Studio for simplified, guided migrations.
 
 ---
 
@@ -266,12 +310,12 @@ Azure SQL architecture is as heavy as Identity in the exam. You must be able to 
 
 For "Multi-Active" scenarios requiring low read/write latency globally, Cosmos DB is the architect's choice.
 
-* **APIs**: Know that you can migrate from MongoDB or MySQL using specific Cosmos APIs.  
-* **Consistency Levels**: For the exam, focus on the trade-offs between **Strong** (guaranteed data order but higher latency) and **Bounded Staleness** (reads may lag slightly behind writes but offer better performance).
+- **APIs**: Know that you can migrate from MongoDB or MySQL using specific Cosmos APIs.  
+- **Consistency Levels**: For the exam, focus on the trade-offs between **Strong** (guaranteed data order but higher latency) and **Bounded Staleness** (reads may lag slightly behind writes but offer better performance).
 
 ---
 
-## **🌩️ Volume IV: Business Continuity and Disaster Recovery (BCDR)**
+## Volume IV: Business Continuity and Disaster Recovery (BCDR)
 
 In the AZ-305 exam, success in the BCDR domain is measured by an architect's ability to meet strict Recovery Point Objective (RPO) and Recovery Time Objective (RTO) requirements. These metrics are abundant in exam scenarios and dictate which services you must deploy to ensure data integrity and service availability during a disaster.
 
@@ -281,8 +325,8 @@ In the AZ-305 exam, success in the BCDR domain is measured by an architect's abi
 
 Before selecting a tool, you must understand the business constraints:
 
-* **RPO (Recovery Point Objective)**: The maximum acceptable amount of data loss measured in time (e.g., "We can lose 1 hour of data").  
-* **RTO (Recovery Time Objective)**: The maximum acceptable downtime for a service (e.g., "The site must be back up within 30 minutes").
+- **RPO (Recovery Point Objective)**: The maximum acceptable amount of data loss measured in time (e.g., "We can lose 1 hour of data").  
+- **RTO (Recovery Time Objective)**: The maximum acceptable downtime for a service (e.g., "The site must be back up within 30 minutes").
 
 ---
 
@@ -294,19 +338,19 @@ Azure provides distinct tools for backup (data protection) and site recovery (bu
 
 ASR is the primary tool for Business Continuity.
 
-* **Orchestration**: It orchestrates the replication of virtual machines from a primary site to a secondary location.  
-* **Failover and Failback**: It enables automated failover during a disaster and simplified failback once the primary site is healthy.  
-* **Migration Use Case**: While designed for DR, ASR is frequently leveraged for migrating on-premises VMs to Azure.
+- **Orchestration**: It orchestrates the replication of virtual machines from a primary site to a secondary location.  
+- **Failover and Failback**: It enables automated failover during a disaster and simplified failback once the primary site is healthy.  
+- **Migration Use Case**: While designed for DR, ASR is frequently leveraged for migrating on-premises VMs to Azure.
 
 #### **🛡️ Azure Backup**
 
 Azure Backup focuses on long-term data retention and protection.
 
-* **Ransomware Protection**: It protects against accidental deletion or targeted ransomware attacks by keeping data in isolated vaults.  
-* **DR Objective**: While it can be part of a DR plan, it is usually for less demanding RPO/RTO requirements compared to ASR.  
-* **Vault Selection**: Architects must distinguish between **Recovery Services Vault** and **Backup Vault**.  
-  * **Recovery Services Vault**: Supports a wide range of data sources, including Azure VMs, SQL in Azure VMs, and SAP HANA.  
-  * **Backup Vault**: Used for newer workloads like Azure Blobs, Azure Disks, and Azure Database for PostgreSQL.
+- **Ransomware Protection**: It protects against accidental deletion or targeted ransomware attacks by keeping data in isolated vaults.  
+- **DR Objective**: While it can be part of a DR plan, it is usually for less demanding RPO/RTO requirements compared to ASR.  
+- **Vault Selection**: Architects must distinguish between **Recovery Services Vault** and **Backup Vault**.  
+  - **Recovery Services Vault**: Supports a wide range of data sources, including Azure VMs, SQL in Azure VMs, and SAP HANA.  
+  - **Backup Vault**: Used for newer workloads like Azure Blobs, Azure Disks, and Azure Database for PostgreSQL.
 
 ---
 
@@ -316,18 +360,18 @@ Expect approximately 3-5 questions focused on SQL-specific resiliency. You must 
 
 #### **🚀 Always On Availability Groups (AGs)**
 
-* **High Availability**: Provides the highest level of HA for SQL Server running on Azure Virtual Machines.  
-* **Infrastructure**: Requires a Windows Server Failover Cluster (WSFC) and multiple VM instances.
+- **High Availability**: Provides the highest level of HA for SQL Server running on Azure Virtual Machines.  
+- **Infrastructure**: Requires a Windows Server Failover Cluster (WSFC) and multiple VM instances.
 
 #### **🔗 Failover Groups**
 
-* **Managed Failover**: Provides a managed abstraction for Azure SQL Database and Azure SQL Managed Instance.  
-* **Global Endpoint**: Uses a single listener endpoint that automatically points to the current primary region, simplifying application connection strings.
+- **Managed Failover**: Provides a managed abstraction for Azure SQL Database and Azure SQL Managed Instance.  
+- **Global Endpoint**: Uses a single listener endpoint that automatically points to the current primary region, simplifying application connection strings.
 
 #### **🌍 Geo-Replication and Geo-Restore**
 
-* **Geo-Replication**: Creates readable secondary databases in different regions. This is ideal for lower RPO requirements.  
-* **Geo-Restore**: The most cost-effective but slowest recovery option, relying on geo-redundant backups. This is only suitable for very high RTO requirements.
+- **Geo-Replication**: Creates readable secondary databases in different regions. This is ideal for lower RPO requirements.  
+- **Geo-Restore**: The most cost-effective but slowest recovery option, relying on geo-redundant backups. This is only suitable for very high RTO requirements.
 
 ---
 
@@ -335,13 +379,13 @@ Expect approximately 3-5 questions focused on SQL-specific resiliency. You must 
 
 Azure File Sync acts as a bridge between on-premises and the cloud, serving both a performance and recovery role.
 
-* **Centralization**: It allows you to move on-premises file shares to the cloud, creating centralized SMB shares in Azure.  
-* **Local Access (Data Cache)**: It maintains local access speeds by caching frequently used files on the on-premises server.  
-* **Rapid Restore**: In the event of an on-premises server failure, you can install the File Sync agent on a new server and quickly rebuild the local cache from the Azure central share.
+- **Centralization**: It allows you to move on-premises file shares to the cloud, creating centralized SMB shares in Azure.  
+- **Local Access (Data Cache)**: It maintains local access speeds by caching frequently used files on the on-premises server.  
+- **Rapid Restore**: In the event of an on-premises server failure, you can install the File Sync agent on a new server and quickly rebuild the local cache from the Azure central share.
 
 ---
 
-## **🌐 Volume V: Infrastructure, Networking, and Monitoring**
+## Volume V: Infrastructure, Networking, and Monitoring
 
 *Networking and monitoring form the connective tissue of any Azure architecture. While foundational networking is a heavy focus in AZ-104, the AZ-305 exam shifts the perspective toward high-level design choices—specifically, how to route global traffic, secure service-to-service communication, and centralize observability.*
 
@@ -353,22 +397,22 @@ An architect must know exactly which load-balancing service to choose based on t
 
 #### **🌍 Global Traffic Managers**
 
-* **Azure Front Door**: A modern, global Layer 7 (HTTP/HTTPS) entry point that uses the Microsoft global edge network.  
-  * **Architecture**: It utilizes Anycast to route users to the nearest "Point of Presence" (PoP).  
-  * **Protection**: It brings integrated Web Application Firewall (WAF) protection, Rate Limiting, and SSL offloading.  
-  * **Best For**: Global web applications requiring high availability and fast content delivery.  
-* **Azure Traffic Manager**: A DNS-based load balancer that operates at the global level.  
-  * **Mechanism**: It uses DNS to direct client requests to the most appropriate service endpoint based on a routing method (e.g., performance, priority, or geographic).  
-  * **Limitation**: Because it is DNS-based, it does not "see" the traffic and therefore does not provide WAF or SSL offloading.
+- **Azure Front Door**: A modern, global Layer 7 (HTTP/HTTPS) entry point that uses the Microsoft global edge network.  
+  - **Architecture**: It utilizes Anycast to route users to the nearest "Point of Presence" (PoP).  
+  - **Protection**: It brings integrated Web Application Firewall (WAF) protection, Rate Limiting, and SSL offloading.  
+  - **Best For**: Global web applications requiring high availability and fast content delivery.  
+- **Azure Traffic Manager**: A DNS-based load balancer that operates at the global level.  
+  - **Mechanism**: It uses DNS to direct client requests to the most appropriate service endpoint based on a routing method (e.g., performance, priority, or geographic).  
+  - **Limitation**: Because it is DNS-based, it does not "see" the traffic and therefore does not provide WAF or SSL offloading.
 
 #### **📍 Regional Load Balancers**
 
-* **Azure Application Gateway**: A regional Layer 7 load balancer.  
-  * **Features**: Supports URL-path-based routing, cookie-based session affinity, and integrated WAF.  
-  * **Use Case**: Ideal for complex web applications within a single region.  
-* **Azure Load Balancer**: A high-performance, ultra-low-latency Layer 4 (TCP/UDP) load balancer.  
-  * **Function**: It distributes inbound flows that arrive at the load balancer's front end to back-end pool instances.  
-  * **Security**: Unlike the Layer 7 options, it does not provide WAF or URL-based routing.
+- **Azure Application Gateway**: A regional Layer 7 load balancer.  
+  - **Features**: Supports URL-path-based routing, cookie-based session affinity, and integrated WAF.  
+  - **Use Case**: Ideal for complex web applications within a single region.  
+- **Azure Load Balancer**: A high-performance, ultra-low-latency Layer 4 (TCP/UDP) load balancer.  
+  - **Function**: It distributes inbound flows that arrive at the load balancer's front end to back-end pool instances.  
+  - **Security**: Unlike the Layer 7 options, it does not provide WAF or URL-based routing.
 
 ---
 
@@ -378,17 +422,17 @@ Connecting Virtual Networks (VNets) and bridging the gap to on-premises environm
 
 #### **🔒 Private Connectivity: Link vs. Endpoint**
 
-* **Private Link**: Provides private connectivity from a VNet to an Azure PaaS service (e.g., SQL, Storage).  
-  * **Mechanism**: It creates a Private Endpoint with a private IP address inside your VNet, ensuring traffic stays on the Microsoft backbone and never touches the public internet.  
-* **Service Endpoints (Service Link)**: Extends your VNet private address space and identity to Azure services over a direct connection.  
-  * **Difference**: Unlike Private Link, the service still has a public IP, but access is restricted to your VNet at the network layer.
+- **Private Link**: Provides private connectivity from a VNet to an Azure PaaS service (e.g., SQL, Storage).  
+  - **Mechanism**: It creates a Private Endpoint with a private IP address inside your VNet, ensuring traffic stays on the Microsoft backbone and never touches the public internet.  
+- **Service Endpoints (Service Link)**: Extends your VNet private address space and identity to Azure services over a direct connection.  
+  - **Difference**: Unlike Private Link, the service still has a public IP, but access is restricted to your VNet at the network layer.
 
 #### **🌉 Hybrid Networking**
 
-* **ExpressRoute**: A private, dedicated connection from your on-premises data center to Azure. It provides higher security, more reliability, and faster speeds than typical internet-based connections.  
-* **VPN Site-to-Site**: An encrypted tunnel over the public internet connecting your on-premises network to your Azure VNet.  
-* **VNet Peering**: Directly connects two VNets in the same or different regions over the Azure backbone.  
-* **Hub-and-Spoke**: A common architectural pattern where a central "Hub" VNet manages shared services (like ExpressRoute or Firewalls) and connects to multiple "Spoke" VNets containing individual workloads.
+- **ExpressRoute**: A private, dedicated connection from your on-premises data center to Azure. It provides higher security, more reliability, and faster speeds than typical internet-based connections.  
+- **VPN Site-to-Site**: An encrypted tunnel over the public internet connecting your on-premises network to your Azure VNet.  
+- **VNet Peering**: Directly connects two VNets in the same or different regions over the Azure backbone.  
+- **Hub-and-Spoke**: A common architectural pattern where a central "Hub" VNet manages shared services (like ExpressRoute or Firewalls) and connects to multiple "Spoke" VNets containing individual workloads.
 
 ---
 
@@ -400,25 +444,25 @@ Observability is mandatory for a Senior CSA. You must know how to leverage the d
 
 This is the "Swiss Army Knife" for troubleshooting network issues in Azure.
 
-* **IP Flow Verify**: Checks if a packet is allowed or denied to/from a virtual machine based on Network Security Group (NSG) rules.  
-* **NSG Flow Logs**: Provides detailed information about ingress and egress IP traffic through an NSG.  
-* **Traffic Analytics**: A cloud-based solution that provides visibility into user and application activity across your networks.
+- **IP Flow Verify**: Checks if a packet is allowed or denied to/from a virtual machine based on Network Security Group (NSG) rules.  
+- **NSG Flow Logs**: Provides detailed information about ingress and egress IP traffic through an NSG.  
+- **Traffic Analytics**: A cloud-based solution that provides visibility into user and application activity across your networks.
 
 #### **📊 Log Analytics Workspaces**
 
 The Log Analytics Workspace is the central hub for log visualization and complex querying.
 
-* **Centralization**: It is the mandatory destination for most Azure service diagnostic logs and activity logs when you need long-term retention or advanced analysis.  
-* **Azure Metrics vs. Activity Logs**: While Metrics provide real-time numerical data and Activity Logs record "who did what," Log Analytics is where you go to cross-reference and visualize this data at scale.
+- **Centralization**: It is the mandatory destination for most Azure service diagnostic logs and activity logs when you need long-term retention or advanced analysis.  
+- **Azure Metrics vs. Activity Logs**: While Metrics provide real-time numerical data and Activity Logs record "who did what," Log Analytics is where you go to cross-reference and visualize this data at scale.
 
 ---
 
 ### **5.4 Specialized Compute Networking**
 
-* **RDMA Feature (H-series)**: High-performance H-series instances support Remote Direct Memory Access (RDMA) over InfiniBand.  
-  * **Advantage**: This allows nodes in a cluster to communicate with extremely low latency and high throughput, which is essential for High-Performance Computing (HPC) workloads.
+- **RDMA Feature (H-series)**: High-performance H-series instances support Remote Direct Memory Access (RDMA) over InfiniBand.  
+  - **Advantage**: This allows nodes in a cluster to communicate with extremely low latency and high throughput, which is essential for High-Performance Computing (HPC) workloads.
 
-## **🚀 Volume VI: Compute and Web Application Design**
+## Volume VI: Compute and Web Application Design
 
 *The final pillar of the AZ-305 exam focuses on hosting strategies and high-availability (HA) compute. As an architect, your role is to determine which compute service—Virtual Machines, Scale Sets, or App Services—best aligns with the workload's performance requirements and the organization's administrative capabilities.*
 
@@ -428,9 +472,9 @@ The Log Analytics Workspace is the central hub for log visualization and complex
 
 Designing for "zero downtime" requires a deep understanding of how Azure handles hardware and datacenter failures. You must choose the right availability option based on the required Service Level Agreement (SLA).
 
-* **Availability Sets**: These protect your application against hardware failures within a single datacenter by distributing VM instances across multiple **Fault Domains** (physical racks) and **Update Domains** (logical groups for patching).  
-* **Availability Zones**: This is a higher level of protection that shields your application from a full datacenter outage by placing VM instances in physically separate datacenters within the same region.  
-* **Virtual Machine Scale Sets (VMSS)**: This is the primary mechanism for **Autoscale**. It allows you to create and manage a group of load-balanced VMs where the number of instances can automatically increase or decrease in response to demand or a defined schedule.
+- **Availability Sets**: These protect your application against hardware failures within a single datacenter by distributing VM instances across multiple **Fault Domains** (physical racks) and **Update Domains** (logical groups for patching).  
+- **Availability Zones**: This is a higher level of protection that shields your application from a full datacenter outage by placing VM instances in physically separate datacenters within the same region.  
+- **Virtual Machine Scale Sets (VMSS)**: This is the primary mechanism for **Autoscale**. It allows you to create and manage a group of load-balanced VMs where the number of instances can automatically increase or decrease in response to demand or a defined schedule.
 
 ---
 
@@ -442,14 +486,14 @@ For web-based workloads, Azure App Service (PaaS) is often the preferred archite
 
 Choosing the correct tier is imperative for cost and feature availability:
 
-* **Free/Shared**: Best for small development or testing environments; these tiers do not support scaling or custom domains.  
-* **Basic**: Designed for apps that have lower traffic requirements and don't need advanced auto-scaling.  
-* **Standard**: The production-ready tier that supports auto-scaling, daily backups, and up to 5 deployment slots.  
-* **Premium (v2/v3)**: Designed for high-scale production apps; offers enhanced performance, larger storage, and advanced networking features like VNet integration.
+- **Free/Shared**: Best for small development or testing environments; these tiers do not support scaling or custom domains.  
+- **Basic**: Designed for apps that have lower traffic requirements and don't need advanced auto-scaling.  
+- **Standard**: The production-ready tier that supports auto-scaling, daily backups, and up to 5 deployment slots.  
+- **Premium (v2/v3)**: Designed for high-scale production apps; offers enhanced performance, larger storage, and advanced networking features like VNet integration.
 
 #### **🔄 Web Application Migration**
 
-* **App Service Migration Assistant**: Architects should leverage this tool to assess and migrate on-premises web applications to Azure App Service. It identifies compatibility issues and provides a guided path for moving the application code to the cloud.
+- **App Service Migration Assistant**: Architects should leverage this tool to assess and migrate on-premises web applications to Azure App Service. It identifies compatibility issues and provides a guided path for moving the application code to the cloud.
 
 ---
 
@@ -457,13 +501,13 @@ Choosing the correct tier is imperative for cost and feature availability:
 
 The "alphabet soup" of VM sizes is more than just naming—it defines the underlying hardware capabilities.
 
-* **B-series**: Burstable; ideal for workloads that are typically idle but need occasional high-performance bursts.  
-* **D-series**: General purpose; balanced CPU-to-memory ratio for enterprise-grade applications.  
-* **E-series**: Memory-optimized; high memory-to-core ratio for in-memory databases.  
-* **F-series**: Compute-optimized; high CPU-to-memory ratio for batch processing or analytics.  
-* **H-series**: High-performance computing (HPC); specifically designed for complex scientific modeling.  
-  * **The RDMA Advantage**: H-series instances feature **Remote Direct Memory Access (RDMA)** over InfiniBand, which allows nodes to communicate with sub-microsecond latency and massive throughput.  
-* **N-series**: GPU-enabled; designed for compute-intensive and graphics-intensive workloads like AI training or video rendering.
+- **B-series**: Burstable; ideal for workloads that are typically idle but need occasional high-performance bursts.  
+- **D-series**: General purpose; balanced CPU-to-memory ratio for enterprise-grade applications.  
+- **E-series**: Memory-optimized; high memory-to-core ratio for in-memory databases.  
+- **F-series**: Compute-optimized; high CPU-to-memory ratio for batch processing or analytics.  
+- **H-series**: High-performance computing (HPC); specifically designed for complex scientific modeling.  
+  - **The RDMA Advantage**: H-series instances feature **Remote Direct Memory Access (RDMA)** over InfiniBand, which allows nodes to communicate with sub-microsecond latency and massive throughput.  
+- **N-series**: GPU-enabled; designed for compute-intensive and graphics-intensive workloads like AI training or video rendering.
 
 ---
 
@@ -471,8 +515,8 @@ The "alphabet soup" of VM sizes is more than just naming—it defines the underl
 
 For mission-critical applications, you must design for both High Availability (within a region) and Disaster Recovery (across regions).
 
-* **Always On Availability Groups (AGs)**: Use this when you need the highest level of HA for SQL Server on Virtual Machines, providing multiple readable and writable replicas.  
-* **Failover Groups**: Use this for a managed disaster recovery experience for Azure SQL Database, allowing for a single endpoint to handle regional failover.
+- **Always On Availability Groups (AGs)**: Use this when you need the highest level of HA for SQL Server on Virtual Machines, providing multiple readable and writable replicas.  
+- **Failover Groups**: Use this for a managed disaster recovery experience for Azure SQL Database, allowing for a single endpoint to handle regional failover.
 
 ---
 
@@ -484,44 +528,342 @@ The AZ-305 isn't just a test of technical knowledge; it is a test of your abilit
 
 ### **🏛️ The Identity & Governance Decision Tree**
 
-* **Need Just-in-Time (JIT) access?** Choose **Privileged Identity Management (PIM)**.  
-* **Need to automate onboarding/offboarding via HR systems?** Use **Lifecycle Workflows**.  
-* **Need to certify that users still require their access?** Perform an **Access Review**.  
-* **Dealing with Partners or Auditors?** Use **B2B Collaboration**.  
-* **Syncing complex multi-forest AD?** **Entra Connect Sync** is your tool; use **Cloud Sync** for lightweight, disconnected forests.  
-* **Which license for PIM?** You must have **Entra ID P2 (E5)**.
+- **Need Just-in-Time (JIT) access?** Choose **Privileged Identity Management (PIM)**.  
+- **Need to automate onboarding/offboarding via HR systems?** Use **Lifecycle Workflows**.  
+- **Need to certify that users still require their access?** Perform an **Access Review**.  
+- **Dealing with Partners or Auditors?** Use **B2B Collaboration**.  
+- **Syncing complex multi-forest AD?** **Entra Connect Sync** is your tool; use **Cloud Sync** for lightweight, disconnected forests.  
+- **Which license for PIM?** You must have **Entra ID P2 (E5)**.
 
 ### **💾 The Storage & SQL "Choose This" Matrix**
 
-* **Need cross-database queries or SQL Agent after migration?** The answer is **Azure SQL Managed Instance**.  
-* **Need to migrate a non-SQL database (MongoDB) to a globally distributed NoSQL?** Use **Azure Cosmos DB** with the appropriate API.  
-* **Requirement is for 100TB+ database?** Choose the **Hyperscale** tier.  
-* **Lowest possible latency for a managed disk?** Select **Ultra Disk**.  
-* **Need to protect against a regional disaster?** You must have **GRS**, **RA-GRS**, **GZRS**, or **RA-GZRS** replication.
+- **Need cross-database queries or SQL Agent after migration?** The answer is **Azure SQL Managed Instance**.  
+- **Need to migrate a non-SQL database (MongoDB) to a globally distributed NoSQL?** Use **Azure Cosmos DB** with the appropriate API.  
+- **Requirement is for 100TB+ database?** Choose the **Hyperscale** tier.  
+- **Lowest possible latency for a managed disk?** Select **Ultra Disk**.  
+- **Need to protect against a regional disaster?** You must have **GRS**, **RA-GRS**, **GZRS**, or **RA-GZRS** replication.
 
 ### **🌐 The Networking & Messaging Logic**
 
-* **Global Layer 7 (Web) with WAF?** **Azure Front Door** is the primary choice.  
-* **Global DNS-based routing (Non-HTTP)?** Use **Traffic Manager**.  
-* **Regional Layer 7 with WAF?** **Application Gateway**.  
-* **Millions of events/sec for telemetry?** **Event Hubs**.  
-* **Enterprise messaging with 1:Many (Pub/Sub)?** **Service Bus Topics**.  
-* **Private access to a PaaS service (SQL/Storage) without the Internet?** **Private Link**.
+- **Global Layer 7 (Web) with WAF?** **Azure Front Door** is the primary choice.  
+- **Global DNS-based routing (Non-HTTP)?** Use **Traffic Manager**.  
+- **Regional Layer 7 with WAF?** **Application Gateway**.  
+- **Millions of events/sec for telemetry?** **Event Hubs**.  
+- **Enterprise messaging with 1:Many (Pub/Sub)?** **Service Bus Topics**.  
+- **Private access to a PaaS service (SQL/Storage) without the Internet?** **Private Link**.
 
 ### **🌩️ The BCDR & Monitoring Strategy**
 
-* **RPO is near-zero for VMs?** Use **Azure Site Recovery (ASR)**.  
-* **Need to protect files against ransomware with long retention?** **Azure Backup** in a **Recovery Services Vault**.  
-* **Need to troubleshoot why a packet is blocked?** Use **IP Flow Verify** in **Network Watcher**.  
-* **Need to see who deleted a resource?** Check the **Activity Logs**.  
-* **Need to query logs across multiple services?** Centralize them in a **Log Analytics Workspace**.
+- **RPO is near-zero for VMs?** Use **Azure Site Recovery (ASR)**.  
+- **Need to protect files against ransomware with long retention?** **Azure Backup** in a **Recovery Services Vault**.  
+- **Need to troubleshoot why a packet is blocked?** Use **IP Flow Verify** in **Network Watcher**.  
+- **Need to see who deleted a resource?** Check the **Activity Logs**.  
+- **Need to query logs across multiple services?** Centralize them in a **Log Analytics Workspace**.
 
 ---
 
 ### **🏁 Final Pre-Exam Checklist**
 
-* \[ \] I can distinguish between **Managed Identity** (no credential management) and **Service Principals**.  
-* \[ \] I know that **Cosmos DB** consistency levels for the exam are usually **Strong** vs. **Bounded Staleness**.  
-* \[ \] I remember that **RDMA** is the key differentiator for **H-series** VMs.  
-* \[ \] I understand that **Self-hosted Integration Runtime** is required for **ADF** to reach on-prem data.  
-* \[ \] I can identify the **6 replication types** and how many copies each creates.
+- \[ \] I can distinguish between **Managed Identity** (no credential management) and **Service Principals**.  
+- \[ \] I know that **Cosmos DB** consistency levels for the exam are usually **Strong** vs. **Bounded Staleness**.  
+- \[ \] I remember that **RDMA** is the key differentiator for **H-series** VMs.  
+- \[ \] I understand that **Self-hosted Integration Runtime** is required for **ADF** to reach on-prem data.  
+- \[ \] I can identify the **6 replication types** and how many copies each creates.
+
+---
+
+## Glossary
+
+### A
+
+**Always On Availability Groups (AGs)**: Provides the highest level of HA for SQL Server running on Azure Virtual Machines, requiring a Windows Server Failover Cluster (WSFC) and multiple VM instances.
+
+**Anycast**: Routing technology used by Azure Front Door to route users to the nearest Point of Presence (PoP).
+
+**Application Gateway**: A regional Layer 7 load balancer that supports URL-path-based routing, cookie-based session affinity, and integrated WAF.
+
+**Azure Backup**: Azure service focused on long-term data retention and protection against accidental deletion and ransomware attacks.
+
+**Azure Cosmos DB**: A globally distributed, multi-model database service for multi-active scenarios requiring low read/write latency.
+
+**Azure Data Box**: A ruggedized hardware device (part of Data Box Family) for offline data migrations, supporting up to 100 TB of data.
+
+**Azure Data Box Disk**: Portable SSDs (part of Data Box Family) for small-scale offline data migrations, supporting up to 40 TB.
+
+**Azure Data Box Heavy**: A massive hardware device (part of Data Box Family) for large-scale offline data migrations, supporting up to 1 PB of data.
+
+**Azure Data Factory (ADF)**: A "pure orchestrator" for data engineering pipelines used to create, schedule, and orchestrate ETL/ELT workflows.
+
+**Azure Entra Connect Sync**: The robust, traditional tool for syncing on-premises Active Directory with Microsoft Entra ID, preferred for complex environments.
+
+**Azure Entra Cloud Sync**: A lightweight, agent-based alternative to Entra Connect Sync, designed for multi-forest or disconnected environments.
+
+**Azure File Sync**: Service that allows centralization of file shares in Azure Files while maintaining local performance of on-premises file servers.
+
+**Azure Front Door**: A modern, global Layer 7 entry point using Microsoft's global edge network for HTTP/HTTPS traffic with integrated WAF.
+
+**Azure Import/Export**: Service requiring use of your own physical disks to ship data to or from Azure datacenters.
+
+**Azure Key Vault**: Secure, centralized location for secrets, keys, and certificates.
+
+**Azure Load Balancer**: A high-performance, ultra-low-latency Layer 4 (TCP/UDP) load balancer.
+
+**Azure Site Recovery (ASR)**: Primary tool for Business Continuity that orchestrates replication of virtual machines from primary to secondary sites.
+
+**Azure SQL Database**: A fully managed PaaS offering supporting Single Database and Elastic Pools architectures.
+
+**Azure SQL Managed Instance (MI)**: Nearly 100% compatible with on-premises SQL Server, the hero service for migration scenarios.
+
+**Azure Synapse Analytics**: An "all-in-one shop" service for large-scale data warehousing and Big Data processing.
+
+**Azure Traffic Manager**: A DNS-based global load balancer for directing client requests based on routing methods (performance, priority, geographic).
+
+**AzCopy**: High-performance command-line utility for copying or moving Blobs and files to and from storage accounts.
+
+### B
+
+**B2B Collaboration**: Microsoft Entra feature for securely collaborating with partners or external organizations.
+
+**B-series VMs**: Burstable virtual machines ideal for workloads that are typically idle but need occasional high-performance bursts.
+
+**Backup Vault**: Azure Backup container used for newer workloads like Azure Blobs, Azure Disks, and Azure Database for PostgreSQL.
+
+**Bounded Staleness**: Azure Cosmos DB consistency level offering better performance with reads that may lag slightly behind writes.
+
+**Business Critical (SQL Tier)**: High-performance SQL tier for apps with low-latency requirements and fast recovery using Always On replicas.
+
+### C
+
+**CanNotDelete Lock**: Azure resource lock preventing deletion of a resource or container.
+
+**Conditional Access**: The "If-Then" engine of Microsoft Entra ID for implementing risk-based access policies.
+
+**Consistency Levels**: Trade-offs in Azure Cosmos DB between data freshness and performance (Strong vs. Bounded Staleness).
+
+**Cool Tier**: Blob access tier for infrequently accessed data stored for at least 30 days.
+
+**Cross-database Queries**: Database feature requiring cross-database transaction support, available in Azure SQL Managed Instance.
+
+### D
+
+**DMA (Data Migration Assistant)**: Tool for compatibility assessments to identify breaking changes before migration.
+
+**DMS (Database Migration Service)**: Primary tool for large-scale, orchestrated migrations to Azure.
+
+**D-series VMs**: General-purpose virtual machines with balanced CPU-to-memory ratio.
+
+**DTU (Database Transaction Unit)**: Simple, pre-configured bundles of compute and storage for Azure SQL.
+
+### E
+
+**E-series VMs**: Memory-optimized virtual machines with high memory-to-core ratio for in-memory databases.
+
+**Elastic Pools**: Azure SQL feature allowing multiple databases to share a set of resources for cost efficiency.
+
+**Entra Connect Sync**: See Azure Entra Connect Sync.
+
+**Entra Cloud Sync**: See Azure Entra Cloud Sync.
+
+**Entra ID**: Microsoft's cloud-based identity and access management service (formerly Azure AD).
+
+**ExpressRoute**: Private, dedicated connection from on-premises datacenter to Azure with higher security and reliability.
+
+### F
+
+**Failover Groups**: Managed disaster recovery solution for Azure SQL Database and Managed Instance with single endpoint handling.
+
+**F-series VMs**: Compute-optimized virtual machines with high CPU-to-memory ratio for batch processing or analytics.
+
+**Fault Domain**: Physical rack in Azure datacenter used for distributing VM instances in Availability Sets.
+
+**Federation (AD FS)**: Authentication flow relying on external identity provider like on-premises AD FS.
+
+### G
+
+**General Purpose (SQL Tier)**: Most common SQL tier balanced for standard workloads.
+
+**General Purpose v2 (GPv2)**: Modern standard storage account type supporting Blobs, Files, Queues, and Tables.
+
+**Geo-Replication**: Creates readable secondary databases in different regions for disaster recovery.
+
+**Geo-Restore**: Cost-effective recovery option using geo-redundant backups (slowest recovery).
+
+**GRS (Geo-Redundant Storage)**: Replication strategy with 6 copies (3 local + 3 in paired region) protecting against regional disaster.
+
+**GZRS (Geo-Zone Redundant Storage)**: Highest availability replication with 6 copies (3 zonal + 3 in paired region).
+
+### H
+
+**H-series VMs**: High-performance computing instances specifically designed for complex scientific modeling.
+
+**Hot Tier**: Blob access tier optimized for frequently accessed data.
+
+**Hub-and-Spoke**: Architectural pattern where central Hub VNet manages shared services and connects to Spoke VNets.
+
+**Hyperscale (SQL Tier)**: SQL tier for massive databases (up to 100TB) requiring rapid scaling.
+
+### I
+
+**Identity Lifecycles**: Automation of user onboarding, movement, and offboarding processes.
+
+**Identity Protection**: Microsoft Entra feature providing user risk and sign-in risk detection.
+
+**InfiniBand**: High-speed interconnect technology used by RDMA in H-series VMs.
+
+**Integration Runtime (IR)**: The compute engine used by Azure Data Factory for data movement and transformation.
+
+**IP Flow Verify**: Network Watcher tool checking if packets are allowed or denied based on NSG rules.
+
+### J
+
+**JIT (Just-in-Time) Access**: Privileged Identity Management feature requiring temporary activation of elevated roles.
+
+### K
+
+**Kerberos**: Network authentication protocol supported by Azure Entra Domain Services.
+
+### L
+
+**Layer 4 Load Balancer**: Transport layer load balancer operating on TCP/UDP protocols.
+
+**Layer 7 Load Balancer**: Application layer load balancer operating on HTTP/HTTPS with content-based routing.
+
+**LDAP**: Lightweight Directory Access Protocol supported by Azure Entra Domain Services.
+
+**Lifecycle Workflows**: Microsoft Entra feature automating joiner, mover, leaver processes through HR system integration.
+
+**Licensing Matrix**: Comparison table of Microsoft Entra editions (Free, P1/E3, P2/E5) and their features.
+
+**Log Analytics Workspace**: Central hub for log visualization and complex querying across Azure services.
+
+**LRS (Locally Redundant Storage)**: Replication strategy with 3 copies in single datacenter protecting against disk/rack failure.
+
+### M
+
+**Management Groups (MGs)**: Azure hierarchy layer for governing multiple subscriptions and inheriting policies.
+
+**Mapping Data Flows**: Azure Data Factory feature for no-code data transformation at scale.
+
+**Microsoft Entra Domain Services (AD DS)**: Managed domain services in cloud for legacy applications requiring Domain Join, Group Policy, etc.
+
+**MFA (Multi-Factor Authentication)**: Security requirement for privileged identity activation in PIM.
+
+**Migration Mechanisms**: Tools for moving workloads to Azure (Azure Migrate, DMS, DMA, SSMA).
+
+### N
+
+**N-series VMs**: GPU-enabled virtual machines for compute-intensive and graphics-intensive workloads.
+
+**NSG (Network Security Group)**: Azure network layer firewall controlling inbound and outbound traffic.
+
+**NSG Flow Logs**: Detailed information about ingress and egress IP traffic through NSGs.
+
+### P
+
+**Pass-through Authentication (PTA)**: Authentication flow with password validation strictly on-premises.
+
+**Password Hash Sync (PHS)**: Synchronization of password hash to Entra ID, enabling leaked credential detection.
+
+**Permission Creep**: Accumulation of unnecessary access as users move through roles.
+
+**PIM (Privileged Identity Management)**: Hero service for reducing attack surface through just-in-time privileged access.
+
+**Point of Presence (PoP)**: Strategic locations of Azure Front Door edge servers worldwide.
+
+**Premium Block Blob Storage**: Optimized for high transaction rates and very low, consistent storage latency.
+
+**Premium File Storage**: High-performance enterprise file shares supporting both SMB and NFS protocols.
+
+**Private Endpoint**: Private IP address inside VNet for accessing Azure PaaS services privately.
+
+**Private Link**: Provides private connectivity from VNet to Azure PaaS services without internet exposure.
+
+### R
+
+**RA-GZRS (Read-Access Geo-Zone-Redundant Storage)**: Geo-zone redundant with read-only access to secondary region.
+
+**RA-GRS (Read-Access Geo-Redundant Storage)**: Geo-redundant with read-only access to secondary region.
+
+**RBAC (Role-Based Access Control)**: Azure authorization model focusing on user actions and permissions.
+
+**ReadOnly Lock**: Azure resource lock preventing modifications to a resource or container.
+
+**RDMA (Remote Direct Memory Access)**: Sub-microsecond latency communication technology in H-series VMs over InfiniBand.
+
+**Recovery Point Objective (RPO)**: Maximum acceptable amount of data loss measured in time.
+
+**Recovery Services Vault**: Azure Backup container supporting wide range of data sources for recovery.
+
+**Recovery Time Objective (RTO)**: Maximum acceptable downtime for a service.
+
+**Resource Groups (RGs)**: Logical containers for grouping resources sharing common lifecycle.
+
+**Resource Locks**: Azure management locks (CanNotDelete or ReadOnly) applied to resources.
+
+### S
+
+**Scope**: The level at which Azure assignments, policies, or locks are applied (Tenant → MG → Subscription → RG → Resource).
+
+**Self-hosted Integration Runtime**: Required by Azure Data Factory to reach on-premises or private network data.
+
+**Service Bus**: Enterprise messaging service for complex communication patterns (Queues, Topics, Subscriptions).
+
+**Service Endpoints**: Extends VNet private address space to Azure services with direct connection.
+
+**Service Principals**: Managed identity representing an application requiring credential management.
+
+**Sign-in Risk**: Probability that specific authentication request is suspicious.
+
+**SMB (Server Message Block)**: Protocol for shared file access supported by Azure Files.
+
+**Spot VMs**: Discounted virtual machines using spare Azure capacity.
+
+**SQL Agent**: SQL Server feature for job scheduling and automation, available in Managed Instance.
+
+**SQL on Azure VMs**: IaaS option providing full OS-level access to SQL Server.
+
+**SSMA (SQL Server Migration Assistant)**: Tool for migrating non-SQL engines (Oracle, MySQL) to Azure SQL.
+
+**Strong Consistency**: Azure Cosmos DB consistency level guaranteeing data order but with higher latency.
+
+**Subscriptions**: Primary boundary for billing and resource quotas in Azure hierarchy.
+
+**Synapse Pipelines**: Built-in orchestration engine in Azure Synapse (same as Azure Data Factory).
+
+### T
+
+**Tenants**: Top-level boundary in Azure hierarchy representing organizations and housing all identities.
+
+**Traffic Analytics**: Cloud-based solution providing visibility into user and application activity across networks.
+
+**Managed Identity**: Application identity managed by Azure without credential management required.
+
+### U
+
+**Ultra Disk**: Premium managed disk offering lowest possible latency for performance-critical workloads.
+
+**Update Domain**: Logical group in Availability Set used for coordinating patching.
+
+**URL-path-based Routing**: Application Gateway feature routing requests based on URL paths.
+
+### V
+
+**vCore**: Granular compute and storage scaling model for Azure SQL independent from storage.
+
+**Virtual Machine Scale Sets (VMSS)**: Primary mechanism for autoscaling with load-balanced VMs.
+
+**VNet (Virtual Network)**: Azure network isolated from other networks with customizable address space.
+
+**VNet Peering**: Direct connection between two VNets in same or different regions.
+
+**VPN Site-to-Site**: Encrypted tunnel over public internet connecting on-premises network to Azure VNet.
+
+### W
+
+**WAF (Web Application Firewall)**: Security feature in Azure Front Door and Application Gateway for application protection.
+
+**Windows Server Failover Cluster (WSFC)**: Infrastructure requirement for SQL Server Always On Availability Groups.
+
+### Z
+
+**Zone Redundant Storage (ZRS)**: Replication strategy with 3 copies across 3 availability zones protecting against datacenter outage.
