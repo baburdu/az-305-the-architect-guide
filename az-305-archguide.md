@@ -2,38 +2,38 @@
 
 ## Table of Contents
 
-- [Volume I: Identity, Authentication, and Governance](#volume-i-identity-authentication-and-governance)
+- [Chapter I: Identity, Authentication, and Governance](#volume-i-identity-authentication-and-governance)
   - [1.1 The Azure Organizational Hierarchy and Scope](#11-the-azure-organizational-hierarchy-and-scope)
   - [1.2 Microsoft Entra ID Governance](#12-microsoft-entra-id-governance)
   - [1.3 Hybrid Identity Architectures](#13-hybrid-identity-architectures)
   - [1.4 Licensing, Risk, and Security](#14-licensing-risk-and-security)
 
-- [Volume II: Data Engineering and Modern Integration](#volume-ii-data-engineering-and-modern-integration)
+- [Chapter II: Data Engineering and Modern Integration](#volume-ii-data-engineering-and-modern-integration)
   - [2.1 The Data Orchestration and Analytics Layer](#21-the-data-orchestration-and-analytics-layer)
   - [2.2 Data Migration and Offline Mechanisms](#22-data-migration-and-offline-mechanisms)
   - [2.3 Messaging and Event-Driven Architecture](#23-messaging-and-event-driven-architecture)
   - [2.4 Security and Visualization](#24-security-and-visualization)
 
-- [Volume III: Data Storage and SQL Architectures](#volume-iii-data-storage-and-sql-architectures)
+- [Chapter III: Data Storage and SQL Architectures](#volume-iii-data-storage-and-sql-architectures)
   - [3.1 Storage Account Fundamentals](#31-storage-account-fundamentals)
   - [3.2 Replication and Resiliency](#32-replication-and-resiliency)
   - [3.3 SQL Solutions and Migration Strategy](#33-sql-solutions-and-migration-strategy)
   - [3.4 Migration Mechanisms](#34-migration-mechanisms)
   - [3.5 Azure Cosmos DB](#35-azure-cosmos-db)
 
-- [Volume IV: Business Continuity and Disaster Recovery (BCDR)](#volume-iv-business-continuity-and-disaster-recovery-bcdr)
+- [Chapter IV: Business Continuity and Disaster Recovery (BCDR)](#volume-iv-business-continuity-and-disaster-recovery-bcdr)
   - [4.1 Defining the Architectural Recovery Goals](#41-defining-the-architectural-recovery-goals)
   - [4.2 Backup and Site Recovery Mechanisms](#42-backup-and-site-recovery-mechanisms)
   - [4.3 Database High Availability and DR Options](#43-database-high-availability-and-dr-options)
   - [4.4 Hybrid BCDR with Azure File Sync](#44-hybrid-bcdr-with-azure-file-sync)
 
-- [Volume V: Infrastructure, Networking, and Monitoring](#volume-v-infrastructure-networking-and-monitoring)
+- [Chapter V: Infrastructure, Networking, and Monitoring](#volume-v-infrastructure-networking-and-monitoring)
   - [5.1 The Global vs. Regional Traffic Matrix](#51-the-global-vs-regional-traffic-matrix)
   - [5.2 Secure Connectivity and Hybrid Design](#52-secure-connectivity-and-hybrid-design)
   - [5.3 Diagnostic Tools and Monitoring](#53-diagnostic-tools-and-monitoring)
   - [5.4 Specialized Compute Networking](#54-specialized-compute-networking)
 
-- [Volume VI: Compute and Web Application Design](#volume-vi-compute-and-web-application-design)
+- [Chapter VI: Compute and Web Application Design](#volume-vi-compute-and-web-application-design)
   - [6.1 Compute Resiliency and Availability](#61-compute-resiliency-and-availability)
   - [6.2 App Service Hosting and Plans](#62-app-service-hosting-and-plans)
   - [6.3 Instance Types and Specialized Workloads](#63-instance-types-and-specialized-workloads)
@@ -46,7 +46,7 @@
 
 ##
 
-## Volume I: Identity, Authentication, and Governance
+## Chapter I: Identity, Authentication, and Governance
 
 Identity is the primary security perimeter of the modern cloud. In the AZ-305 curriculum, this domain accounts for approximately 30% of the exam questions.
 
@@ -141,7 +141,7 @@ Choosing the right license is a major part of the AZ-305 architect's job.
 
 - **Conditional Access**: This is the "If-Then" engine of Entra ID. **Example**: *If* a user is in the Finance group and the Sign-in Risk is *Medium*, *Then* require MFA and a Managed Device.
 
-## Volume II: Data Engineering and Modern Integration
+## Chapter II: Data Engineering and Modern Integration
 
 *Architecting how data is orchestrated, transformed, and communicated is a core pillar of the AZ-305 exam. This section focuses on the distinction between purely analytical services and orchestration engines.*
 
@@ -236,7 +236,7 @@ A big data streaming platform and event ingestion service.
 - **Azure Key Vault**: As an architect, you must know that the mandatory role of Key Vault is to provide a secure, centralized location for secrets, keys, and certificates. You are not required to know *how* it works internally for the exam, but rather *what* it is for.  
 - **Power BI**: Serves as the primary viewer and dashboard tool for data visualization, turning your Synapse or SQL data into actionable insights.
 
-## Volume III: Data Storage and SQL Architectures
+## Chapter III: Data Storage and SQL Architectures
 
 The heart of any Azure solution lies in its data persistence layer. For the AZ-305 exam, storage and SQL design account for a massive 20-25% of the total content. Architects must be able to choose the correct storage account, replication strategy, and SQL tier to meet specific performance and cost requirements.
 
@@ -315,7 +315,7 @@ For "Multi-Active" scenarios requiring low read/write latency globally, Cosmos D
 
 ---
 
-## Volume IV: Business Continuity and Disaster Recovery (BCDR)
+## Chapter IV: Business Continuity and Disaster Recovery (BCDR)
 
 In the AZ-305 exam, success in the BCDR domain is measured by an architect's ability to meet strict Recovery Point Objective (RPO) and Recovery Time Objective (RTO) requirements. These metrics are abundant in exam scenarios and dictate which services you must deploy to ensure data integrity and service availability during a disaster.
 
@@ -385,7 +385,7 @@ Azure File Sync acts as a bridge between on-premises and the cloud, serving both
 
 ---
 
-## Volume V: Infrastructure, Networking, and Monitoring
+## Chapter V: Infrastructure, Networking, and Monitoring
 
 *Networking and monitoring form the connective tissue of any Azure architecture. While foundational networking is a heavy focus in AZ-104, the AZ-305 exam shifts the perspective toward high-level design choices—specifically, how to route global traffic, secure service-to-service communication, and centralize observability.*
 
@@ -462,7 +462,7 @@ The Log Analytics Workspace is the central hub for log visualization and complex
 - **RDMA Feature (H-series)**: High-performance H-series instances support Remote Direct Memory Access (RDMA) over InfiniBand.  
   - **Advantage**: This allows nodes in a cluster to communicate with extremely low latency and high throughput, which is essential for High-Performance Computing (HPC) workloads.
 
-## Volume VI: Compute and Web Application Design
+## Chapter VI: Compute and Web Application Design
 
 *The final pillar of the AZ-305 exam focuses on hosting strategies and high-availability (HA) compute. As an architect, your role is to determine which compute service—Virtual Machines, Scale Sets, or App Services—best aligns with the workload's performance requirements and the organization's administrative capabilities.*
 
