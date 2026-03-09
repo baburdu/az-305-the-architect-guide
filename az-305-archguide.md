@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-- [Chapter I: Identity, Authentication, and Governance](#volume-i-identity-authentication-and-governance)
+- [Chapter I: Identity, Authentication, and Governance](#chapter-i-identity-authentication-and-governance)
   - [1.1 The Azure Organizational Hierarchy and Scope](#11-the-azure-organizational-hierarchy-and-scope)
   - [1.2 Microsoft Entra ID Governance](#12-microsoft-entra-id-governance)
   - [1.3 Hybrid Identity Architectures](#13-hybrid-identity-architectures)
   - [1.4 Licensing, Risk, and Security](#14-licensing-risk-and-security)
 
-- [Chapter II: Data Engineering and Modern Integration](#volume-ii-data-engineering-and-modern-integration)
+- [Chapter II: Data Engineering and Modern Integration](#chapter-ii-data-engineering-and-modern-integration)
   - [2.1 The Data Orchestration and Analytics Layer](#21-the-data-orchestration-and-analytics-layer)
   - [2.2 Data Migration and Offline Mechanisms](#22-data-migration-and-offline-mechanisms)
   - [2.3 Messaging and Event-Driven Architecture](#23-messaging-and-event-driven-architecture)
